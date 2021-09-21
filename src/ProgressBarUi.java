@@ -25,7 +25,7 @@ public class ProgressBarUi extends BasicProgressBarUI {
 
     public ProgressBarUi() {
         try {
-            bimage = ImageIO.read(this.getClass().getResource("/bricks.png"));
+            bimage = ImageIO.read(this.getClass().getResource("/egg.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,8 +95,8 @@ public class ProgressBarUi extends BasicProgressBarUI {
         if (offset2 <= 2) {
             offset2 = 2;
             velocity = 1;
-        } else if (offset2 >= w - JBUI.scale(15)) {
-            offset2 = w - JBUI.scale(15);
+        } else if (offset2 >= w - JBUI.scale(Icons.MARIO.getIconWidth())) {
+            offset2 = w - JBUI.scale(Icons.MARIO.getIconWidth());
             velocity = -1;
         }
         Area area = new Area(new Rectangle2D.Float(0, 0, w, h));
@@ -137,11 +137,12 @@ public class ProgressBarUi extends BasicProgressBarUI {
         }
         final GraphicsConfig config = GraphicsUtil.setupAAPainting(g);
         Insets b = progressBar.getInsets(); // area for border
-        int w = progressBar.getWidth();
-        int h = progressBar.getPreferredSize().height;
-        if (!isEven(c.getHeight() - h)) h++;
-        int barRectWidth = w - (b.right + b.left);
-        int barRectHeight = h - (b.top + b.bottom);
+        int progressBarWidth = progressBar.getWidth();
+        int progressBatHeight = progressBar.getPreferredSize().height;
+
+        if (!isEven(c.getHeight() - progressBatHeight)) progressBatHeight++;
+        int barRectWidth = progressBarWidth - (b.right + b.left);
+        int barRectHeight = progressBatHeight - (b.top + b.bottom);
         if (barRectWidth <= 0 || barRectHeight <= 0) {
             return;
         }
@@ -151,27 +152,27 @@ public class ProgressBarUi extends BasicProgressBarUI {
         g.setColor(background);
         Graphics2D g2 = (Graphics2D) g;
         if (c.isOpaque()) {
-            g.fillRect(0, 0, w, h);
+            g.fillRect(0, 0, progressBarWidth, progressBatHeight);
         }
 
         final float R = JBUI.scale(8f);
         final float R2 = JBUI.scale(9f);
         final float off = JBUI.scale(1f);
-        g2.translate(0, (c.getHeight() - h) / 2);
+        g2.translate(0, (c.getHeight() - progressBatHeight) / 2);
         g2.setColor(progressBar.getForeground());
-        g2.fill(new RoundRectangle2D.Float(0, 0, w - off, h - off, R2, R2));
+        g2.fill(new RoundRectangle2D.Float(0, 0, progressBarWidth - off, progressBatHeight - off, R2, R2));
         g2.setColor(background);
-        g2.fill(new RoundRectangle2D.Float(off, off, w - 2f * off - off, h - 2f * off - off, R, R));
+        g2.fill(new RoundRectangle2D.Float(off, off, progressBarWidth - 2f * off - off, progressBatHeight - 2f * off - off, R, R));
 
         if (bimage != null) {
-            TexturePaint tp = new TexturePaint(bimage, new Rectangle2D.Double(0, 1, h - 2f * off - off, h - 2f * off - off));
+            TexturePaint tp = new TexturePaint(bimage, new Rectangle2D.Double(0, 1, progressBatHeight - 2f * off - off, progressBatHeight - 2f * off - off));
             g2.setPaint(tp);
         }
 
-        g2.fill(new RoundRectangle2D.Float(2f * off, 2f * off, amountFull - JBUI.scale(5f), h - JBUI.scale(5f), JBUI.scale(7f), JBUI.scale(7f)));
+        g2.fill(new RoundRectangle2D.Float(2f * off, 2f * off, amountFull - JBUI.scale(5f), progressBatHeight - JBUI.scale(5f), JBUI.scale(7f), JBUI.scale(7f)));
 
-        Icons.MARIO.paintIcon(progressBar, g2, amountFull - JBUI.scale(5), -JBUI.scale(1));
-        g2.translate(0, -(c.getHeight() - h) / 2);
+        Icons.MARIO.paintIcon(progressBar, g2, amountFull - JBUI.scale(Icons.MARIO.getIconWidth() / 2), -JBUI.scale(1));
+        g2.translate(0, -(c.getHeight() - progressBatHeight) / 2);
 
         if (progressBar.isStringPainted()) {
             paintString(g, b.left, b.top,
